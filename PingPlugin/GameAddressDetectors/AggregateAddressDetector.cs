@@ -12,10 +12,10 @@ namespace PingPlugin.GameAddressDetectors
         private readonly ClientStateAddressDetector clientStateDetector;
         private readonly IPluginLog pluginLog;
 
-        public AggregateAddressDetector(IFramework framework, IClientState clientState, IPluginLog pluginLog)
+        public AggregateAddressDetector(IFramework framework, IClientState clientState, IObjectTable objectTable, IPluginLog pluginLog)
         {
             this.ipHlpApiDetector = new IpHlpApiAddressDetector(pluginLog);
-            this.clientStateDetector = new ClientStateAddressDetector(framework, clientState, pluginLog);
+            this.clientStateDetector = new ClientStateAddressDetector(framework, clientState, objectTable, pluginLog);
             this.pluginLog = pluginLog;
         }
 

@@ -11,12 +11,14 @@ namespace PingPlugin.GameAddressDetectors
 
         private readonly IFramework framework;
         private readonly IClientState clientState;
+        private readonly IObjectTable objectTable;
         private readonly IPluginLog pluginLog;
 
-        public ClientStateAddressDetector(IFramework framework, IClientState clientState, IPluginLog pluginLog)
+        public ClientStateAddressDetector(IFramework framework, IClientState clientState, IObjectTable objectTable, IPluginLog pluginLog)
         {
             this.framework = framework;
             this.clientState = clientState;
+            this.objectTable = objectTable;
             this.pluginLog = pluginLog;
         }
 
@@ -28,7 +30,7 @@ namespace PingPlugin.GameAddressDetectors
 
         private IPAddress GetAddressCore(bool verbose)
         {
-            if (!this.clientState.IsLoggedIn || this.clientState.LocalPlayer == null)
+            if (!this.clientState.IsLoggedIn || this.objectTable.LocalPlayer == null)
             {
                 Address = IPAddress.Loopback;
                 return Address;
@@ -37,7 +39,7 @@ namespace PingPlugin.GameAddressDetectors
             uint? dcId;
             try
             {
-                dcId = this.clientState.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.RowId;
+                dcId = this.objectTable.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.RowId;
                 if ((dcId == null || dcId == this.lastDcId) && !IPAddress.IsLoopback(Address)) return Address;
                 this.lastDcId = (uint)dcId;
             }
@@ -91,7 +93,7 @@ namespace PingPlugin.GameAddressDetectors
 
             if (verbose && !Equals(address, IPAddress.Loopback) && !Equals(address, Address))
             {
-                var dcName = this.clientState.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.ValueNullable?.Name;
+                var dcName = this.objectTable.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.ValueNullable?.Name;
                 pluginLog.Verbose($"Data center changed to {dcName}, using FFXIV server address {address}");
             }
 

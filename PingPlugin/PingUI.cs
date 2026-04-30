@@ -500,7 +500,7 @@ namespace PingPlugin
             {
                 var fontPx = Math.Min(Math.Max(8, this.config.FontScale), 128);
                 var safeFontConfig = new SafeFontConfig() { SizePx = fontPx };
-                tk.AddDalamudAssetFont(DalamudAsset.NotoSansJpMedium, safeFontConfig);
+                tk.AddDalamudAssetFont(DalamudAsset.NotoSansCjkMedium, safeFontConfig);
                 tk.AttachExtraGlyphsForDalamudLanguage(safeFontConfig);
             }));
 
