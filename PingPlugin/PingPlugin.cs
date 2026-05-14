@@ -60,13 +60,7 @@ namespace PingPlugin
         {
             this.pingTracker?.Dispose();
             
-            PingTracker newTracker = kind switch
-            {
-                PingTrackerKind.Aggregate or PingTrackerKind.Packets => new AggregatePingTracker(this.config, this.addressDetector, this.pluginLog),
-                PingTrackerKind.COM when !WineDetector.IsWINE() => new ComponentModelPingTracker(this.config, this.addressDetector, this.pluginLog),
-                PingTrackerKind.IpHlpApi => new IpHlpApiPingTracker(this.config, this.addressDetector, this.pluginLog),
-                _ => RequestFallbackPingTracker(kind),
-            };
+            var newTracker = RequestNewPingTrackerCore(kind);
 
             this.pingTracker = newTracker;
             if (this.pingTracker == null)
@@ -77,6 +71,23 @@ namespace PingPlugin
             this.pingTracker.Start();
             
             return newTracker;
+        }
+
+        private PingTracker RequestNewPingTrackerCore(PingTrackerKind kind)
+        {
+            if (WineDetector.IsWINE())
+            {
+                // Only reliable tracker under WINE
+                return new IpHlpApiPingTracker(this.config, this.addressDetector, this.pluginLog);
+            }
+            
+            return kind switch
+            {
+                PingTrackerKind.Aggregate or PingTrackerKind.Packets => new AggregatePingTracker(this.config, this.addressDetector, this.pluginLog),
+                PingTrackerKind.COM => new ComponentModelPingTracker(this.config, this.addressDetector, this.pluginLog),
+                PingTrackerKind.IpHlpApi => new IpHlpApiPingTracker(this.config, this.addressDetector, this.pluginLog),
+                _ => RequestFallbackPingTracker(kind),
+            };
         }
 
         private AggregatePingTracker RequestFallbackPingTracker(PingTrackerKind kind)

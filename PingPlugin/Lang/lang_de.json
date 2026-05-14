@@ -47,6 +47,10 @@
     "message": "Pluginfenster sperren",
     "description": "PingPlugin.Configuration"
   },
+  "WineDetected": {
+    "message": "Aufgrund der Kompatibilität unter Wine auf den Win32-Tracker beschränkt.",
+    "description": "PingPlugin.Configuration"
+  },
   "DisplayMode": {
     "message": "Display mode",
     "description": "PingPlugin.Configuration"

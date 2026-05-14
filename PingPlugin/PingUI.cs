@@ -13,6 +13,7 @@ using System.Numerics;
 using System.Threading;
 using Dalamud;
 using Dalamud.Interface.ManagedFontAtlas;
+using Dalamud.Interface.Utility.Raii;
 
 namespace PingPlugin
 {
@@ -145,20 +146,24 @@ namespace PingPlugin
             var trackerNames = trackerKinds.Where(t => t != PingTrackerKind.Packets).Select(t => t.FormatName())
                 .ToArray();
             var tracker = (int)this.pingTracker.Kind;
-            if (ImGui.Combo(Loc.Localize("PingTracker", "Ping Tracker"), ref tracker, trackerNames,
-                    trackerNames.Length))
+
+            using (var _ = ImRaii.Disabled(WineDetector.IsWINE()))
             {
-                var trackerKind = (PingTrackerKind)tracker;
+                if (ImGui.Combo(Loc.Localize("PingTracker", "Ping Tracker"), ref tracker, trackerNames,
+                        trackerNames.Length))
+                {
+                    var trackerKind = (PingTrackerKind)tracker;
 
-                this.config.TrackingMode = trackerKind;
-                this.config.Save();
+                    this.config.TrackingMode = trackerKind;
+                    this.config.Save();
 
-                this.pingTracker = this.requestPingTracker(trackerKind);
+                    this.pingTracker = this.requestPingTracker(trackerKind);
+                }
             }
 
-            if (tracker == (int)PingTrackerKind.COM && WineDetector.IsWINE())
+            if (WineDetector.IsWINE() && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
             {
-                ImGui.TextColored(Red, Loc.Localize("NotSupportedOnThisPlatform", string.Empty));
+                ImGui.SetTooltip(Loc.Localize("WineDetected", "Locked to Win32 tracker under Wine for compatibility."));
             }
 
             ImGui.Spacing();

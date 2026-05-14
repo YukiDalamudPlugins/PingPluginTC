@@ -47,6 +47,10 @@
     "message": "プラグインウインドウを閉ざします",
     "description": "PingPlugin.Configuration"
   },
+  "WineDetected": {
+    "message": "互換性のため、Wine環境ではWin32トラッカーに固定されます。",
+    "description": "PingPlugin.Configuration"
+  },
   "DisplayMode": {
     "message": "ディスプレイの種類",
     "description": "PingPlugin.Configuration"

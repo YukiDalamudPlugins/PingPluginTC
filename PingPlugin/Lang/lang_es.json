@@ -47,6 +47,10 @@
     "message": "Congele los windows de plugin",
     "description": "PingPlugin.Configuration"
   },
+  "WineDetected": {
+    "message": "Bloqueado al rastreador Win32 bajo Wine por compatibilidad.",
+    "description": "PingPlugin.Configuration"
+  },
   "DisplayMode": {
     "message": "Display mode",
     "description": "PingPlugin.Configuration"

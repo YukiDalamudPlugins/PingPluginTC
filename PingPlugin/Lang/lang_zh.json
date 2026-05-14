@@ -47,6 +47,10 @@
     "message": "锁定悬浮窗",
     "description": "PingPlugin.Configuration"
   },
+  "WineDetected": {
+    "message": "在Wine下为兼容性已锁定为Win32跟踪器。",
+    "description": "PingPlugin.Configuration"
+  },
   "DisplayMode": {
     "message": "Display mode",
     "description": "PingPlugin.Configuration"
