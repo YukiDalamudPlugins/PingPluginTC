@@ -19,17 +19,17 @@
     "CanUnloadAsync": false,
     "LoadPriority": 0,
     "ImageUrls": [
-      "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/Assets/image1.png"
+      "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/tc/Assets/image1.png"
     ],
-    "IconUrl": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/Assets/icon.png",
+    "IconUrl": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/tc/Assets/icon.png",
     "Punchline": "A ping display plugin for Dalamud.",
     "Changelog": "API12 (The Calamity) build with Traditional Chinese (繁體中文) and a TCP-handshake ping tracker for the Singapore servers (fixes 0ms reading where ICMP is filtered).",
     "AcceptsFeedback": true,
     "IsHide": false,
     "IsTestingExclusive": false,
     "DownloadCount": 0,
-    "DownloadLinkInstall": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/latest.zip",
-    "DownloadLinkTesting": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/latest.zip",
-    "DownloadLinkUpdate": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/latest.zip"
+    "DownloadLinkInstall": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/tc/latest.zip",
+    "DownloadLinkTesting": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/tc/latest.zip",
+    "DownloadLinkUpdate": "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/tc/latest.zip"
   }
 ]
