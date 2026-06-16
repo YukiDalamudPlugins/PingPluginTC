@@ -29,13 +29,15 @@ namespace PingPlugin.PingTrackers
                         var rtt = GetAddressLastRTT(SeAddress);
                         var error = (WinError)Marshal.GetLastWin32Error();
 
-                        Errored = error != WinError.NO_ERROR;
+                        // GetRTTAndHopCount can "succeed" with rtt=0 when ICMP is filtered
+                        // (e.g. the SG/GCP servers). A 0ms reading to a remote host is not real.
+                        Errored = error != WinError.NO_ERROR || rtt == 0;
 
                         if (!Errored)
                         {
                             NextRTTCalculation(rtt);
                         }
-                        else
+                        else if (Verbose)
                         {
                             pluginLog.Warning($"Got Win32 error {error} when executing ping - this may be temporary and acceptable.");
                         }

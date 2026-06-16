@@ -8,5 +8,6 @@
         de,
         fr,
         zh,
+        zhtw,
     }
 }

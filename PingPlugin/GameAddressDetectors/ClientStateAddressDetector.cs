@@ -11,14 +11,12 @@ namespace PingPlugin.GameAddressDetectors
 
         private readonly IFramework framework;
         private readonly IClientState clientState;
-        private readonly IObjectTable objectTable;
         private readonly IPluginLog pluginLog;
 
-        public ClientStateAddressDetector(IFramework framework, IClientState clientState, IObjectTable objectTable, IPluginLog pluginLog)
+        public ClientStateAddressDetector(IFramework framework, IClientState clientState, IPluginLog pluginLog)
         {
             this.framework = framework;
             this.clientState = clientState;
-            this.objectTable = objectTable;
             this.pluginLog = pluginLog;
         }
 
@@ -30,7 +28,7 @@ namespace PingPlugin.GameAddressDetectors
 
         private IPAddress GetAddressCore(bool verbose)
         {
-            if (!this.clientState.IsLoggedIn || this.objectTable.LocalPlayer == null)
+            if (!this.clientState.IsLoggedIn || this.clientState.LocalPlayer == null)
             {
                 Address = IPAddress.Loopback;
                 return Address;
@@ -39,7 +37,7 @@ namespace PingPlugin.GameAddressDetectors
             uint? dcId;
             try
             {
-                dcId = this.objectTable.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.RowId;
+                dcId = this.clientState.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.RowId;
                 if ((dcId == null || dcId == this.lastDcId) && !IPAddress.IsLoopback(Address)) return Address;
                 this.lastDcId = (uint)dcId;
             }
@@ -84,6 +82,10 @@ namespace PingPlugin.GameAddressDetectors
                 11 => IPAddress.Parse("204.2.29.9"), // Dynamis
                 12 => IPAddress.Parse("80.239.145.8"), // Shadow
 
+                // Traditional Chinese (The Calamity / 陸行鳥), hosted on Google Cloud Singapore.
+                // WorldDCGroupType RowId 151. Alternate observed gateway: 35.240.191.148.
+                151 => IPAddress.Parse("34.143.159.134"), // 陸行鳥 (繁中)
+
                 // If you have CN/KR DC IDs and IP addresses, feel free to PR them.
                 // World server IP address are fine too, since worlds are hosted
                 // alongside the lobby servers.
@@ -93,7 +95,7 @@ namespace PingPlugin.GameAddressDetectors
 
             if (verbose && !Equals(address, IPAddress.Loopback) && !Equals(address, Address))
             {
-                var dcName = this.objectTable.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.ValueNullable?.Name;
+                var dcName = this.clientState.LocalPlayer!.CurrentWorld.ValueNullable?.DataCenter.ValueNullable?.Name;
                 pluginLog.Verbose($"Data center changed to {dcName}, using FFXIV server address {address}");
             }
 

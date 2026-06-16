@@ -1,14 +1,14 @@
-﻿{
+{
   "NotSupportedOnThisPlatform": {
-    "message": "Not supported on this platform",
+    "message": "此平台不支援",
     "description": "PingPlugin.NotSupportedOnThisPlatform"
   },
   "PingTrackerKindAutodetect": {
-    "message": "Autodetect (Default)",
+    "message": "自動偵測（預設）",
     "description": "PingPlugin.Kind"
   },
   "PingTrackerKindCOM": {
-    "message": "COM (Windows Only)",
+    "message": "COM（僅限 Windows）",
     "description": "PingPlugin.Kind"
   },
   "PingTrackerKindWin32API": {
@@ -16,119 +16,119 @@
     "description": "PingPlugin.Kind"
   },
   "PingTrackerKindTCP": {
-    "message": "TCP handshake",
+    "message": "TCP 交握",
     "description": "PingPlugin.Kind"
   },
   "PingTrackerKindPackets": {
-    "message": "Game packets",
+    "message": "遊戲封包",
     "description": "PingPlugin.Kind"
   },
   "ClickThrough": {
-    "message": "Click through plugin windows",
+    "message": "點擊穿透外掛視窗",
     "description": "PingPlugin.Configuration"
   },
   "Defaults": {
-    "message": "Defaults",
+    "message": "預設值",
     "description": "PingPlugin.Configuration"
   },
   "HideErrors": {
-    "message": "Hide errors",
+    "message": "隱藏錯誤",
     "description": "PingPlugin.Configuration"
   },
   "HideAveragePing": {
-    "message": "Hide average ping",
+    "message": "隱藏平均延遲",
     "description": "PingPlugin.Configuration"
   },
   "HideOverlaysDuringCutscenes": {
-    "message": "Hide overlays with HUD",
+    "message": "隨遊戲介面一起隱藏懸浮窗",
     "description": "PingPlugin.Configuration"
   },
   "Language": {
-    "message": "Language",
+    "message": "語言",
     "description": "PingPlugin.Configuration"
   },
   "LockPluginWindows": {
-    "message": "Lock plugin windows",
+    "message": "鎖定外掛視窗",
     "description": "PingPlugin.Configuration"
   },
   "PingTracker": {
-    "message": "Ping Tracker",
+    "message": "延遲偵測方式",
     "description": "PingPlugin.Configuration"
   },
   "WineDetected": {
-    "message": "Locked to Win32 tracker under Wine for compatibility.",
+    "message": "在 Wine 環境下已鎖定為 Win32 偵測器以確保相容性。",
     "description": "PingPlugin.Configuration"
   },
   "DisplayMode": {
-    "message": "Display mode",
+    "message": "顯示模式",
     "description": "PingPlugin.Configuration"
   },
   "ServerBarDisplay": {
-    "message": "Server bar",
+    "message": "伺服器資訊列",
     "description": "PingPlugin.Configuration"
   },
   "DefaultDisplay": {
-    "message": "Default",
+    "message": "預設",
     "description": "PingPlugin.Configuration"
   },
   "MicroDisplay": {
-    "message": "Micro display",
+    "message": "迷你顯示",
     "description": "PingPlugin.Configuration"
   },
   "MicroShowAveragePing": {
-    "message": "Show average ping",
+    "message": "顯示平均延遲",
     "description": "PingPlugin.Configuration"
   },
   "MicroShowLastPing": {
-    "message": "Show last ping",
+    "message": "顯示最近延遲",
     "description": "PingPlugin.Configuration"
   },
   "MinimalDisplay": {
-    "message": "Minimal display",
+    "message": "最簡顯示",
     "description": "PingPlugin.Configuration"
   },
   "FontScale": {
-    "message": "Font scale",
+    "message": "字型大小",
     "description": "PingPlugin.Configuration"
   },
   "MonitorColor": {
-    "message": "Monitor Color",
+    "message": "監視器顏色",
     "description": "PingPlugin.Configuration"
   },
   "MonitorErrorColor": {
-    "message": "Monitor Error Color",
+    "message": "監視器錯誤顏色",
     "description": "PingPlugin.Configuration"
   },
   "MonitorOpacity": {
-    "message": "Monitor Opacity",
+    "message": "監視器不透明度",
     "description": "PingPlugin.Configuration"
   },
   "RecordedPings": {
-    "message": "Recorded Pings",
+    "message": "延遲取樣數",
     "description": "PingPlugin.Configuration"
   },
   "ResetWindowPositions": {
-    "message": "Reset Window Positions",
+    "message": "重設視窗位置",
     "description": "PingPlugin.Configuration"
   },
   "ConfigurationWindowTitle": {
-    "message": "PingPlugin Configuration",
+    "message": "PingPlugin 設定",
     "description": "PingPlugin.WindowTitles"
   },
   "PingGraphTitle": {
-    "message": "Ping Graph",
+    "message": "延遲圖表",
     "description": "PingPlugin.WindowTitles"
   },
   "UIAverage": {
-    "message": "Average",
+    "message": "平均",
     "description": "PingPlugin.UIText"
   },
   "UIError": {
-    "message": "Error: {0}",
+    "message": "錯誤：{0}",
     "description": "PingPlugin.UIText"
   },
   "UIGraphTitle": {
-    "message": "Network Latency (ms) vs Pings",
+    "message": "網路延遲 (ms) 對 Ping 次數",
     "description": "PingPlugin.UIText"
   },
   "UIMillisecondAbbr": {
@@ -136,23 +136,23 @@
     "description": "PingPlugin.UIText"
   },
   "UIMinimalDisplay": {
-    "message": "Ping: {0}ms / Average: {1}ms",
+    "message": "延遲：{0}ms / 平均：{1}ms",
     "description": "PingPlugin.UIText"
   },
   "UIMinimalDisplayNoAverage": {
-    "message": "Ping: {0}ms",
+    "message": "延遲：{0}ms",
     "description": "PingPlugin.UIText"
   },
   "UINoData": {
-    "message": "No data to display at this time.",
+    "message": "目前沒有可顯示的資料。",
     "description": "PingPlugin.UIText"
   },
   "UIRegularDisplay": {
-    "message": "Connected to: {0}\nPing: {1}ms\nAverage ping: {2}ms",
+    "message": "連線至：{0}\n延遲：{1}ms\n平均延遲：{2}ms",
     "description": "PingPlugin.UIText"
   },
   "UIRegularDisplayNoAverage": {
-    "message": "Connected to: {0}\nPing: {1}ms",
+    "message": "連線至：{0}\n延遲：{1}ms",
     "description": "PingPlugin.UIText"
   }
 }

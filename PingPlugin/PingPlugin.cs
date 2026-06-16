@@ -77,15 +77,17 @@ namespace PingPlugin
         {
             if (WineDetector.IsWINE())
             {
-                // Only reliable tracker under WINE
-                return new IpHlpApiPingTracker(this.config, this.addressDetector, this.pluginLog);
+                // ICMP is filtered on the TC (Singapore) servers, so the Win32/ICMP tracker
+                // reads 0ms. The TCP-handshake tracker is reliable under WINE and on SG.
+                return new TcpPingTracker(this.config, this.addressDetector, this.pluginLog);
             }
-            
+
             return kind switch
             {
                 PingTrackerKind.Aggregate or PingTrackerKind.Packets => new AggregatePingTracker(this.config, this.addressDetector, this.pluginLog),
                 PingTrackerKind.COM => new ComponentModelPingTracker(this.config, this.addressDetector, this.pluginLog),
                 PingTrackerKind.IpHlpApi => new IpHlpApiPingTracker(this.config, this.addressDetector, this.pluginLog),
+                PingTrackerKind.TCP => new TcpPingTracker(this.config, this.addressDetector, this.pluginLog),
                 _ => RequestFallbackPingTracker(kind),
             };
         }

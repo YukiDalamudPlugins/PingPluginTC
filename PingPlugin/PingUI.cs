@@ -3,7 +3,7 @@ using Dalamud.Game.Gui.Dtr;
 using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using Dalamud.Bindings.ImGui;
+using ImGuiNET;
 using PingPlugin.PingTrackers;
 using System;
 using System.Collections.Generic;
@@ -104,7 +104,7 @@ namespace PingPlugin
                     try
                     {
                         this.dtrEntry = dtrBar.Get(dtrBarTitle + i);
-                        this.dtrEntry.MinimumWidth = GetDtrBarEntryWidth();
+                        // IDtrBarEntry.MinimumWidth is not available on API12.
                         this.dtrEntry.Text = "Pinging...";
                         this.dtrEntry.Shown = false;
                     }
@@ -213,7 +213,6 @@ namespace PingPlugin
                     {
                         this.config.ServerBarDisplayLast = serverBarDisplayLast;
                         this.pingTracker.ForceSendMessage();
-                        this.dtrEntry.MinimumWidth = GetDtrBarEntryWidth();
                         this.config.Save();
                     }
 
@@ -222,7 +221,6 @@ namespace PingPlugin
                     {
                         this.config.ServerBarDisplayAverage = serverBarDisplayAverage;
                         this.pingTracker.ForceSendMessage();
-                        this.dtrEntry.MinimumWidth = GetDtrBarEntryWidth();
                         this.config.Save();
                     }
 
@@ -285,7 +283,7 @@ namespace PingPlugin
             }
 
             var currentItem = (int)this.config.RuntimeLang;
-            var supportedLanguages = new[] { "English", "日本語", "Español", "Deutsch", "Français", /*"中文"*/ };
+            var supportedLanguages = new[] { "English", "日本語", "Español", "Deutsch", "Français", "简体中文", "繁體中文" };
             if (ImGui.Combo(Loc.Localize("Language", string.Empty), ref currentItem, supportedLanguages,
                     supportedLanguages.Length))
             {
@@ -416,14 +414,6 @@ namespace PingPlugin
             this.dtrEntry.Text = text;
         }
 
-        private ushort GetDtrBarEntryWidth()
-        {
-            ushort minWidth = 0;
-            if (this.config.ServerBarDisplayLast) minWidth += 55;
-            if (this.config.ServerBarDisplayAverage) minWidth += 55;
-            return minWidth;
-        }
-
         private void DrawGraph()
         {
             var windowFlags = BuildWindowFlags(ImGuiWindowFlags.NoResize);
@@ -458,7 +448,8 @@ namespace PingPlugin
                 var highY = 22 + this.config.FontScale * positionScaleFactor;
                 var avgY = lowY - Rescale((float)this.pingTracker.AverageRTT, max, min, graphSize.Y);
 
-                ImGui.PlotLines(string.Empty, pingArray, graphSize: graphSize);
+                // ImGui.NET (API12) exposes the C-style overload with a `ref float` head pointer.
+                ImGui.PlotLines(string.Empty, ref pingArray[0], pingArray.Length, 0, null, float.MaxValue, float.MaxValue, graphSize);
 
                 if (!ImGui.IsWindowCollapsed())
                 {
@@ -505,7 +496,7 @@ namespace PingPlugin
             {
                 var fontPx = Math.Min(Math.Max(8, this.config.FontScale), 128);
                 var safeFontConfig = new SafeFontConfig() { SizePx = fontPx };
-                tk.AddDalamudAssetFont(DalamudAsset.NotoSansCjkMedium, safeFontConfig);
+                tk.AddDalamudAssetFont(DalamudAsset.NotoSansTcRegular, safeFontConfig);
                 tk.AttachExtraGlyphsForDalamudLanguage(safeFontConfig);
             }));
 

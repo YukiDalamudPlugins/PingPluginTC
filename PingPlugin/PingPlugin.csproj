@@ -1,10 +1,23 @@
-﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+﻿<Project Sdk="Dalamud.NET.Sdk/12.0.2">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <!-- net9.0-windows is provided by Dalamud.NET.Sdk 12.x (API12) -->
     <LangVersion>11.0</LangVersion>
-    <Version>2.11.1.0</Version>
+    <Version>2.11.2.0</Version>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Distinct InternalName for the TC distribution (DalamudPackager derives it from AssemblyName).
+         RootNamespace is kept as PingPlugin so embedded resource names (PingPlugin.Lang.*) and the
+         code namespace are unchanged. -->
+    <AssemblyName>PingPluginTC</AssemblyName>
+    <RootNamespace>PingPlugin</RootNamespace>
+  </PropertyGroup>
+
+  <!-- API12 TC build: reference the XIVTheCalamity (Traditional Chinese) Dalamud, which is on API12.
+       The SDK seeds AssemblySearchPaths with the default (API15) XIVLauncher path in its own props,
+       so we must prepend the Calamity path here to make Dalamud/ImGui.NET resolve from API12. -->
+  <PropertyGroup>
+    <DalamudLibPath>$(appdata)\XIVTheCalamity\Dalamud\Hooks\dev\</DalamudLibPath>
+    <AssemblySearchPaths>$(DalamudLibPath);$(AssemblySearchPaths)</AssemblySearchPaths>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -45,6 +58,7 @@
     <EmbeddedResource Include="Lang\lang_fr.json" />
     <EmbeddedResource Include="Lang\lang_ja.json" />
     <EmbeddedResource Include="Lang\lang_zh.json" />
+    <EmbeddedResource Include="Lang\lang_zhtw.json" />
   </ItemGroup>
 
 </Project>

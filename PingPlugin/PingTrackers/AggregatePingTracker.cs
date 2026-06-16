@@ -11,6 +11,7 @@ namespace PingPlugin.PingTrackers
     {
         private const string COMTrackerKey = "COM";
         private const string IpHlpApiTrackerKey = "IpHlpApi";
+        private const string TcpTrackerKey = "Tcp";
 
         private readonly IDictionary<string, TrackerInfo> trackerInfos;
         private readonly DecisionTree<string> decisionTree;
@@ -41,23 +42,35 @@ namespace PingPlugin.PingTrackers
             RegisterTracker(IpHlpApiTrackerKey,
                 new IpHlpApiPingTracker(config, addressDetector, pluginLog) { Verbose = false });
 
+            // TCP-handshake fallback for servers that filter ICMP (e.g. the Traditional
+            // Chinese servers on Google Cloud Singapore, where both ICMP trackers read 0ms).
+            RegisterTracker(TcpTrackerKey,
+                new TcpPingTracker(config, addressDetector, pluginLog) { Verbose = false });
+
             // Create decision tree to solve tracker selection problem
             this.decisionTree = new DecisionTree<string>(
-                // If COM is errored
-                () => TrackerIsErrored(COMTrackerKey),
-                // Just use IpHlpApi
-                pass: new DecisionTree<string>(() => TreeResult.Resolve(IpHlpApiTrackerKey)),
+                // If neither ICMP tracker produces a usable reading, ICMP is probably filtered
+                // (e.g. the SG/GCP servers, where GetRTTAndHopCount "succeeds" but returns 0ms).
+                () => TrackerUnusable(COMTrackerKey) && TrackerUnusable(IpHlpApiTrackerKey),
+                // Fall back to the TCP-handshake tracker.
+                pass: new DecisionTree<string>(() => TreeResult.Resolve(TcpTrackerKey)),
                 fail: new DecisionTree<string>(
-                    // If difference between pings is more than 30
-                    () => Math.Abs((long)GetTrackerRTT(COMTrackerKey) - (long)GetTrackerRTT(IpHlpApiTrackerKey)) > 30,
-                    pass: new DecisionTree<string>(
-                        // Use greater ping value, something's probably subtly broken
-                        () => GetTrackerRTT(COMTrackerKey) < GetTrackerRTT(IpHlpApiTrackerKey),
-                        pass: new DecisionTree<string>(() => TreeResult.Resolve(IpHlpApiTrackerKey)),
-                        fail: new DecisionTree<string>(() => TreeResult.Resolve(COMTrackerKey))
-                    ),
-                    // Otherwise, default to IpHlpApi
-                    fail: new DecisionTree<string>(() => TreeResult.Resolve(IpHlpApiTrackerKey))
+                    // If COM is errored
+                    () => TrackerIsErrored(COMTrackerKey),
+                    // Just use IpHlpApi
+                    pass: new DecisionTree<string>(() => TreeResult.Resolve(IpHlpApiTrackerKey)),
+                    fail: new DecisionTree<string>(
+                        // If difference between pings is more than 30
+                        () => Math.Abs((long)GetTrackerRTT(COMTrackerKey) - (long)GetTrackerRTT(IpHlpApiTrackerKey)) > 30,
+                        pass: new DecisionTree<string>(
+                            // Use greater ping value, something's probably subtly broken
+                            () => GetTrackerRTT(COMTrackerKey) < GetTrackerRTT(IpHlpApiTrackerKey),
+                            pass: new DecisionTree<string>(() => TreeResult.Resolve(IpHlpApiTrackerKey)),
+                            fail: new DecisionTree<string>(() => TreeResult.Resolve(COMTrackerKey))
+                        ),
+                        // Otherwise, default to IpHlpApi
+                        fail: new DecisionTree<string>(() => TreeResult.Resolve(IpHlpApiTrackerKey))
+                    )
                 )
             );
         }
@@ -172,6 +185,13 @@ namespace PingPlugin.PingTrackers
         private bool TrackerIsErrored(string key)
         {
             return this.trackerInfos[key].Tracker?.Errored ?? true;
+        }
+
+        // A tracker is "unusable" if it errored or reports 0ms - a 0ms reading to a remote
+        // server means the measurement failed (e.g. ICMP filtered) rather than a real result.
+        private bool TrackerUnusable(string key)
+        {
+            return TrackerIsErrored(key) || this.trackerInfos[key].LastRTT == 0;
         }
 
         private class TrackerInfo

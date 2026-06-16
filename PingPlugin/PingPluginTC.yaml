@@ -1,0 +1,9 @@
+name: PingPluginTC
+author: karashiiro
+description: A ping display plugin for Dalamud (Traditional Chinese / The Calamity build).
+punchline: A ping display plugin for Dalamud.
+repo_url: https://github.com/YukiDalamudPlugins/PingPluginTC
+tags: [ "ping", "monitor", "utility", "tool" ]
+icon_url: https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/Assets/icon.png
+image_urls: [ "https://raw.githubusercontent.com/YukiDalamudPlugins/PingPluginTC/main/Assets/image1.png" ]
+changelog: API12 (The Calamity) build with Traditional Chinese (繁體中文) and a TCP-handshake ping tracker for the Singapore servers (fixes 0ms reading where ICMP is filtered).
