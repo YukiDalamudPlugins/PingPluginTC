@@ -12,11 +12,16 @@
     <RootNamespace>PingPlugin</RootNamespace>
   </PropertyGroup>
 
-  <!-- API12 TC build: reference the XIVTheCalamity (Traditional Chinese) Dalamud, which is on API12.
-       The SDK seeds AssemblySearchPaths with the default (API15) XIVLauncher path in its own props,
-       so we must prepend the Calamity path here to make Dalamud/ImGui.NET resolve from API12. -->
-  <PropertyGroup>
+  <!-- API12 TC build.
+       Local dev: reference the XIVTheCalamity (Traditional Chinese) Dalamud, which is on API12.
+       CI: set the DALAMUD_HOME environment variable to a downloaded API12 Dalamud instead; the
+       SDK resolves DalamudLibPath from it, so we only set the Calamity path when it is unset. -->
+  <PropertyGroup Condition="'$(DALAMUD_HOME)' == ''">
     <DalamudLibPath>$(appdata)\XIVTheCalamity\Dalamud\Hooks\dev\</DalamudLibPath>
+  </PropertyGroup>
+  <!-- The SDK appends the default (API15) XIVLauncher path to AssemblySearchPaths in its own props,
+       so prepend the resolved DalamudLibPath to make Dalamud/ImGui.NET resolve from API12 first. -->
+  <PropertyGroup>
     <AssemblySearchPaths>$(DalamudLibPath);$(AssemblySearchPaths)</AssemblySearchPaths>
   </PropertyGroup>
 

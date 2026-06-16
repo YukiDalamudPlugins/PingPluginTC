@@ -1,0 +1,80 @@
+name: Publish
+
+# Release workflow for the TC build. Push a 4-part tag (e.g. 2.11.2.0) on the `tc`
+# branch and this builds the plugin against the TC (API 12) Dalamud and attaches the
+# packaged zip + pluginmaster.json to a GitHub Release.
+#
+# The TC client uses XIVTheCalamity's Dalamud fork (API 12), NOT goatcorp's global
+# latest. We download that exact distribution and point the build at it via
+# DALAMUD_HOME (the SDK maps DALAMUD_HOME -> DalamudLibPath). Building on Linux for the
+# net9.0-windows target needs EnableWindowsTargeting=true.
+
+on:
+  push:
+    tags:
+      - '*.*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  # API 12 Dalamud for the TC region (XIVTheCalamity / PlusoneChiang fork).
+  # Bump this when the TC client's Dalamud version changes.
+  DALAMUD_URL: https://github.com/PlusoneChiang/Dalamud/releases/download/12.0.1.5-tc.17/dalamud-tc-12.0.1.5-tc.17.zip
+  EnableWindowsTargeting: 'true'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        run: |
+          if [ "${GITHUB_REF}" != "${GITHUB_REF#refs/tags/}" ]; then
+            echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+          else
+            echo "version=0.0.0.0" >> "$GITHUB_ENV"
+          fi
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Download TC Dalamud (API 12)
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/dalamud"
+          curl -fsSL "$DALAMUD_URL" -o /tmp/dalamud.zip
+          unzip -q /tmp/dalamud.zip -d "$HOME/dalamud"
+          test -f "$HOME/dalamud/Dalamud.dll" || { echo "Dalamud.dll not found after extract"; ls -la "$HOME/dalamud"; exit 1; }
+          echo "DALAMUD_HOME=$HOME/dalamud" >> "$GITHUB_ENV"
+
+      - name: Build plugin
+        run: |
+          dotnet build PingPlugin/PingPlugin.csproj -c Release \
+            -p:Version=${{ env.version }} \
+            -p:AssemblyVersion=${{ env.version }} \
+            -p:FileVersion=${{ env.version }}
+
+      - name: Generate pluginmaster.json
+        run: |
+          set -euo pipefail
+          manifest=PingPlugin/bin/Release/PingPluginTC/PingPluginTC.json
+          dl="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/latest.zip"
+          jq --arg dl "$dl" \
+            '. + {DownloadLinkInstall:$dl, DownloadLinkUpdate:$dl, DownloadLinkTesting:$dl, IsHide:false, IsTestingExclusive:false, DownloadCount:0} | [.]' \
+            "$manifest" > pluginmaster.json
+          cat pluginmaster.json
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            PingPlugin/bin/Release/PingPluginTC/latest.zip
+            pluginmaster.json
+          token: ${{ secrets.GITHUB_TOKEN }}

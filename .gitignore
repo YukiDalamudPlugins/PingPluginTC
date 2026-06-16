@@ -341,3 +341,8 @@ healthchecksdb
 
 # VSCode
 .vscode/
+
+# Release artifacts (produced by CI, never committed)
+/latest.zip
+/pluginmaster.json
+/dalamud/
